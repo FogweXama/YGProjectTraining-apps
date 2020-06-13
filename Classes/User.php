@@ -25,7 +25,7 @@
             }
         }
         public function create($fields=array()){
-            if($this->_db->insert('tbluser', $fields)){
+            if($this->_db->insert('tblusers', $fields)){
                 throw new Exception("There was a problem creating account!", 1);
             }
         }

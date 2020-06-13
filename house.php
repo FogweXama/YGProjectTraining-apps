@@ -1,5 +1,5 @@
 <?php
-    class User{
+    class House{
         private $_db, 
                 $_data, 
                 $_sessionName, 

@@ -8,9 +8,9 @@
                 //wish it be accessible form everywhere in this class
                 $config=$GLOBALS['config'];
                 $path=explode('/',$path);
-                foreach($path as $address){
-                    if(isset($config[$address])){
-                        $config=$config[$address];
+                foreach($path as $bit){
+                    if(isset($config[$bit])){
+                        $config=$config[$bit];
                     }
                 }
                 return $config;

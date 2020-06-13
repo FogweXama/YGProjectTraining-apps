@@ -6,11 +6,20 @@
     // }
     
     // $dpi=UploadPicture::upload();
+
+    //if post which is the input respond form the submit button waited upon
+    //if the post is not sent by the submit button, nothing moves further...
     if(Input::exists())
     {
         //crosside research forgery is done here...
-        //if(var_dump(Token::check(Input::get('token'))))
+        //this stage ensures that a token must exist before any validation occurs
+        //imagine a person submits a result just by editing the data in the url search bar
+        //this next if ensures only a token must exist after the input is pressed for registration to occur
+        $tokenpresent=var_dump(Token::check(Input::get('token')));
+        echo $tokenpresent;
+        if(print_r(Token::check(Input::get('token'))))
         {
+            echo 'Checking for tokens...';
             $validate=new Validate();
             $validation=$validate->check($_POST, array(
                         //validation for the user inputs we've used...
@@ -18,7 +27,7 @@
                             'required'=>true,
                             'min'=>2,
                             'max'=>20,
-                            'unique'=>'users'
+                            'unique'=>'tblusers'
                         ),
                         'txtPassword'=>array(
                             'required'=>true,
@@ -30,7 +39,7 @@
                         ),
                         'txtRePassword'=>array(
                             'required'=>true,
-                            'matches'=>Password
+                            'matches'=>'txtPassword'
                         ),
                         'txtAddress'=>array(
                             'required'=>false,
@@ -51,7 +60,25 @@
                 );
             if($validation->passed())
             {
-                echo 'passed';
+                $user=new User();
+                $salt=Hash::salt(60);
+                        $register=$user->create(
+                            1,
+                            1,
+                            Input::get('txtEmail'),
+                            Input::get('txtAddress'),
+                            Hash::make(Input::get('txtPassword'), $salt), 
+                            Input::get('txtUserName'),
+                            date("Y-m-d",strtotime(Input::get('txtDOB'))), 
+                            Input::get('txtName'),
+                        );
+                        if($register){
+                            Redirect::to(index.php);
+                        }
+                        else{
+                            echo 'Registration failed';
+                            Redirect::to(Includes/errors/failedlogin.php);
+                        }
             //the argument passed in the salt needs to be considered in the db aswell.else it wont match if one is longer than the other...
                 $salt=Hash::salt(64);
                 try 
@@ -80,9 +107,10 @@
             }
             else
             {
+            
                 foreach($validation->errors() as $error)
                 {
-                    echo $error, '<br>';
+                    echo '<br>', $error;
                 }
             }
         }
@@ -93,45 +121,44 @@
     ctrl+k+c to comment and ctrl+k+u to uncomment 
 -->
 <div class="row">
-    <div class="col-md-2  col-sm-1"></div>
+    <div class="col-md-2  col-sm-1"><i class="fa fa-car"></i></div>
     <div class="col-md-8 col-sm-10">
         <div id="box">
-            <form method="POST" action="<?php //echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
                 <div class="row m-0 p-2">
                     <div class="col-md-4"></div>
                     <div class="col-md-8">
                         <input type="file" class="form-control-file border upload" id="imageUpload"><br>
-                        <button onclick="activateUploadBtn(event)">Upload image</button>
+                        <!-- <button onclick="activateUploadBtn(event)">Upload image</button> -->
                     </div>
                 </div>
                 <div class="row m-0 p-2">
-                    <div class="col-md-4"><label for="txtName">Full Name</label></div>
+                    <div class="col-md-4"><label for="txtName"><small><span> Full Name</span></small></label></div>
                     <div class="col-md-8"><input type="text" class="input-cool" name="txtName" value="<?php echo escape(Input::get("txtName")) ?>" id ="txtName" autocomplete="off" ><br></div>
                 </div>
                 <div class="row m-0 p-2">
-                    <div class="col-md-4"><label for="txtDOB">Date of Birth</label></div>
+                    <div class="col-md-4"><label for="txtDOB"><small>Date of Birth</small></label></div>
                     <div class="col-md-8"><input type="date" class="input-cool" name="txtDOB" id ="txtDOB" autocomplete="off" ><br></div>
                 </div>
                 <div class="row m-0 p-2 ">
-                    <div class="col-md-4"><label for="txtEmail">Email</label></div>
+                    <div class="col-md-4"><label for="txtEmail"><small>Email</small></label></div>
                     <div class="col-md-8"><input type="email" class="input-cool" name="txtEmail" id="txtEmail" autocomplete="off"><br></div>
                 </div>
                 <div class="row m-0 p-2">
-                    <div class="col-md-4"><label for="txtUserName">Username</label></div>
+                    <div class="col-md-4"><label for="txtUserName"><small>Username</small></label></div>
                     <div class="col-md-8"><input type="text" class="input-cool" name="txtUserName" id ="txtUserName" autocomplete="off"><br></div>
                 </div>
                 <div class="row m-0 p-2">
-                    <div class="col-md-4"><label for="txtAddress">Address</label></div>
+                    <div class="col-md-4"><label for="txtAddress"><small>Address</small></label></div>
                     <div class="col-md-8"><input type="textarea" class="input-cool" name="txtAddress" id ="txtAddress" autocomplete="off"><br></div>
                 </div>
                 
                 <div class="row m-0 p-2">
-                    <div class="col-md-4"><label for="txtPassword">Password</label></div>
+                    <div class="col-md-4"><label for="txtPassword"><small>Password</small></label></div>
                     <div class="col-md-8"><input type="password" class="input-cool" name="txtPassword" id="txtPassword" autocomplete="off"><br></div>
                 </div>
-        
                 <div class="row m-0 p-2">
-                    <div class="col-md-4"><label for="txtRePassword">Confirm Password</label></div>
+                    <div class="col-md-4"><label for="txtRePassword"><small>Confirm Password</small></label></div>
                     <div class="col-md-8"><input type="password" class="input-cool" id="txtRePassword" name="txtRePassword" autocomplete="off"><br></div>
                 </div>
                 <div class="row m-0 p-2">

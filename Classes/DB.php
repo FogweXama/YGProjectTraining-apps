@@ -49,7 +49,7 @@ class DB{
             $value=$where[2];
 
             if(in_array($operator, $operators)){
-                $sql="{$action} from {$table} where {$field} {$operator}?";
+                $sql="{$action} from {$table} where {$field} {$operator} ?";
                 if(!$this->query($sql, array($value))->error()){
                     return $this;
                 }
@@ -57,8 +57,8 @@ class DB{
         } 
         return false;
     }
-    public function get($table,$where){
-        return $this->action('select * ', $table, $where);
+    public function get($table, $where){
+        return $this->action('Select *', $table, $where);
     }
     public function delete($table, $where){
         return $this->action('delete', $table, $where);
@@ -66,16 +66,16 @@ class DB{
     public function insert($table, $fields=array()){
         if(count($fields)){
             $keys=array_keys($fields);
-            $values=null;
+            $values="";
             $x=1;
             foreach($fields as $field){
-                $values.="?";
+                $values.='?';
                 if($x<count($fields)){
                     $values .=', ';
                 }
                 $x++;
             }
-            $sql="Insert into {$table} ('".implode('","',$keys)."') values ({$values})";
+        $sql="Insert into {$table} ('".implode("','",$keys)."') values ({$values})";
             if($this->query($sql, $fields)->error()){
                 return true;
             }

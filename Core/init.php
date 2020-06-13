@@ -2,20 +2,20 @@
 session_start();
 //put in our superglobal and array of arrays that carry the information about our db, session and cookies
 $GLOBALS['config']=array(
-    'mysql'=>array(
-        'host'=>'localhost',
-        'username'=>'root',
-        'password'=>'',
-        'db'=>'yglearndb'
-    ),
-    'remember'=>array(
-        'cookie_name'=>'hash',
-        'cookie_expiry'=>604800
-    ),
-    'session'=>array(
-        'session_name'=>'user',
-        'token_name'=>'token'
-    )
+        'mysql'=>array(
+            'host'=>'localhost',
+            'username'=>'root',
+            'password'=>'',
+            'db'=>'yglearndb'
+        ),
+        'remember'=>array(
+            'cookie_name'=>'hash',
+            'cookie_expiry'=>604800
+        ),
+        'session'=>array(
+            'session_name'=>'txtUserName',
+            'token_name'=>'token'
+        )
     );
 //loading the other classes needed...ie. require_once 'Classes/config.php..
 spl_autoload_register(function($class){

@@ -11,8 +11,8 @@
                 unset($_SESSION[$name]);
             }
         }
-        public static function get(){
-            return $_SESSION[$name]; 
+        public static function get($name){
+            return $_SESSION[$name];
         }
         public static function flash($name, $string=''){
             if(self::exists($name)){

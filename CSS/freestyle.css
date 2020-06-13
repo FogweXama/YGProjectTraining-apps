@@ -3,6 +3,13 @@
 	float: left;
 	width: 60%;
 }
+form{
+	background-color: #EFEEEE;
+	border: #FFF 20%;
+	box-shadow: -6 -6 #80FFFFFF, blur(16);
+	box-shadow: 6 6 #D1CDC780, blur(16);
+	border-radius: 15px;
+}
 .head-right{
 	float: right;
 	width: 35%;
@@ -10,6 +17,7 @@
 body{
 	margin:1%;
 	padding:1%, 1%, 1%,1%;
+	background-color: #EFEEEE;
 }
 #decider{
 	box-shadow: 5px 5px 5px 5px gray;
