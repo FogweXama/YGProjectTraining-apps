@@ -1,0 +1,15 @@
+#sorry{
+    color:red; 
+    justify-items:center;
+    font-family:'Times New Roman', Times, serif;
+    font-size: 45px;
+}
+.col-md-6{
+    margin-top: 15%;
+    margin-bottom: 15%;
+}
+button a{
+    text-decoration: none;
+    color:white;
+    box-shadow: 1px 1px 1px 1px grey;
+}

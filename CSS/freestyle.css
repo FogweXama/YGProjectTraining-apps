@@ -1,0 +1,50 @@
+
+.head-left{
+	float: left;
+	width: 60%;
+}
+.head-right{
+	float: right;
+	width: 35%;
+}
+body{
+	margin:1%;
+	padding:1%, 1%, 1%,1%;
+}
+#decider{
+	box-shadow: 5px 5px 5px 5px gray;
+	clear: both;
+	border-bottom: black 1px solid;
+}
+#box{
+	margin:100px;
+}
+input{
+	border-radius: 5px;
+}
+.bdline{
+	border-left: 5px grey dotted;
+}
+.sip{
+	background-image: url(../Images/pattern.jpg);
+	color: white;
+	opacity: 80%;
+}
+#dp{
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	border: black double 2px;
+}
+li a:active{
+	margin:10px 5px;
+}
+.footer{
+	background-color: black;
+	bottom: 0px;
+	position: absolute;
+	clear: both;
+}
+#btnSave{
+	width: 150px;
+}
