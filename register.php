@@ -6,7 +6,7 @@
     // }
     
     // $dpi=UploadPicture::upload();
-
+    
     //if post which is the input respond form the submit button waited upon
     //if the post is not sent by the submit button, nothing moves further...
     if(Input::exists())
@@ -15,43 +15,50 @@
         //this stage ensures that a token must exist before any validation occurs
         //imagine a person submits a result just by editing the data in the url search bar
         //this next if ensures only a token must exist after the input is pressed for registration to occur
-        $tokenpresent=var_dump(Token::check(Input::get('token')));
-        echo $tokenpresent;
+        // returns the data type and value of the token : $tokenpresent=var_dump(Token::check(Input::get('token')));
+        //echo $tokenpresent;
         if(print_r(Token::check(Input::get('token'))))
         {
-            echo 'Checking for tokens...';
+            //echo 'Checking for tokens...';
             $validate=new Validate();
             $validation=$validate->check($_POST, array(
                         //validation for the user inputs we've used...
                         'txtUserName'=>array(
+                            'iname'=>'User Name',
                             'required'=>true,
                             'min'=>2,
                             'max'=>20,
                             'unique'=>'tblusers'
                         ),
                         'txtPassword'=>array(
+                            'iname'=>'Password',
                             'required'=>true,
                             'min'=>6
                         ),
                         'txtDOB'=>array(
+                            'iname'=>'Date of Birth',
                             'required'=>true,
                             'min'=>6
                         ),
                         'txtRePassword'=>array(
+                            'iname'=>'Password Re-enter',
                             'required'=>true,
                             'matches'=>'txtPassword'
                         ),
                         'txtAddress'=>array(
+                            'iname'=>'Address',
                             'required'=>false,
                             'min'=>2,
                             'max'=>150
                         ),
                         'txtEmail'=>array(
+                            'iname'=>'E-mail',
                             'required'=>true,
                             'min'=>2,
                             'max'=>100
                         ),
                         'txtName'=>array(
+                            'iname'=>'Name',
                             'required'=>true,
                             'min'=>2,
                             'max'=>50
@@ -61,44 +68,34 @@
             if($validation->passed())
             {
                 $user=new User();
-                $salt=Hash::salt(60);
-                        $register=$user->create(
-                            1,
-                            1,
-                            Input::get('txtEmail'),
-                            Input::get('txtAddress'),
-                            Hash::make(Input::get('txtPassword'), $salt), 
-                            Input::get('txtUserName'),
-                            date("Y-m-d",strtotime(Input::get('txtDOB'))), 
-                            Input::get('txtName'),
-                        );
-                        if($register){
-                            Redirect::to(index.php);
-                        }
-                        else{
-                            echo 'Registration failed';
-                            Redirect::to(Includes/errors/failedlogin.php);
-                        }
-            //the argument passed in the salt needs to be considered in the db aswell.else it wont match if one is longer than the other...
+                        // if($register){
+                        //     Redirect::to("index.php");
+                        // }
+                        // else{
+                        //     echo 'Registration failed';
+                        //     Redirect::to("Includes/errors/failedregister.php");
+                        // }
+                //the argument passed in the salt needs to be considered in the db aswell.else it wont match if one is longer than the other...
                 $salt=Hash::salt(64);
                 try 
                 {
+                    $logged=Input::get('txtUserName');
                     $user->create(
                                 array(
-                                    'ID'=>ID,
-                                    'Name'=>Input::get('txtName'),
+                                    'NameF'=>Input::get('txtName'),
                                     'Email'=>Input::get('txtEmail'),
                                     'UserName'=>Input::get('txtUserName'),
                                     'Password'=>Hash::make(Input::get('txtPassword'), $salt),
                                     //'DOB'=>Input::get('txtDOB'),
                                     'Address'=>Input::get('txtAddress'),
-                                    'DP'=>UploadPicture::display('imageUpload'),
+                                    //'DP'=>UploadPicture::display('imageUpload'),
                                     'Salt'=>$salt,
-                                    'DOB'=>date('Y-m-d'),
-                                    'GroupID'=>1
+                                    'DOB'=>date("Y-m-d",strtotime(Input::get('txtDOB'))),
+                                    'RoleID'=>1
                                     )
                                 );
-                    Session::flash('home',"You registered successfully");
+                    Session::flash($logged,"You registered successfully");
+                    Redirect::to('index.php');
                 } 
                 catch (Exception $e)
                 {
@@ -157,6 +154,7 @@
                     <div class="col-md-4"><label for="txtPassword"><small>Password</small></label></div>
                     <div class="col-md-8"><input type="password" class="input-cool" name="txtPassword" id="txtPassword" autocomplete="off"><br></div>
                 </div>
+        
                 <div class="row m-0 p-2">
                     <div class="col-md-4"><label for="txtRePassword"><small>Confirm Password</small></label></div>
                     <div class="col-md-8"><input type="password" class="input-cool" id="txtRePassword" name="txtRePassword" autocomplete="off"><br></div>

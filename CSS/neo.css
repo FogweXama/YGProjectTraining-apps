@@ -1,0 +1,36 @@
+body{
+    margin: 25px;
+    background-color:rgb(54, 190, 243);
+}
+.boton{
+    height: 100%;
+    width: 98%;
+    margin: 25px, 20px;
+    padding: 25px, 25px;
+    text-align: justify;
+    color: white;
+    font-size: 80px;
+    background-color:rgb(54, 190, 243);
+    border: rgb(40, 182, 238) 1px solid;
+    border-radius: 5px;
+    box-shadow: 6px 6px 15px rgb(56, 178, 226), -6px -6px 15px rgb(116, 207, 243);
+}
+.round-img{
+    border-radius: 50%;
+    border: 3px solid rgb(54, 190, 243);
+    width: 98%;
+    height: 150px;
+    margin: 60px;
+}
+.container{
+    background-color:rgb(54, 190, 243);
+    top:50px;
+}
+#peak{
+    background-image: url('../Images/pattern.jpg');
+    height: 300px;
+}
+span{
+    font-weight: bolder;
+    font-size: 18px;
+}

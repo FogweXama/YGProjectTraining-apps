@@ -4,8 +4,8 @@ require_once 'Core/init.php';
         if(Token::check(Input::get('token'))){
             $validate=new Validate();
             $validation=$validate->check($_POST,array(
-                'username'=>array('required'=>true),
-                'password'=> array('required'=>true)
+                'txtusername'=>array('required'=>true),
+                'txtpassword'=> array('required'=>true)
             ));
         if($validation->passed()){
             $user=new User();

@@ -8,9 +8,9 @@ class DB{
             $_result, //store our result set
             $_count=0;//if there has been any results returned
             //creating our constructor---to be used at instantiation
-    private function _construct(){ 
+    private function __construct(){ 
         try{
-            $this->_pdo=new PDO('mysql:host='. Config::get('mysql/host'). ';dbname='.Config::get('mysql/db'), Config::get('mysql/username'),Config::get('mysql/password'));
+            $this->_pdo=new PDO('mysql:host='. Config::get('mysql/host'). ';dbname='.Config::get('mysql/db'), Config::get('mysql/username'),Config::get('mysql/password'),array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
         }
         catch(PDOException $e){
             die($e->getMessage());
@@ -24,21 +24,27 @@ class DB{
     }
     public function query($sql=null, $params=array()){
         $this->_error=false;//reset error to false to eliminate errors from previous queries
-        if($sql!=null){
-        if($this->_query=$this->_pdo->prepare($sql)){
-            $x=1;
-            if(count($params)){
-                foreach($params as $param){
-                    $this->_query->bindValue($x, $param);
-                    $x++;
+        
+            if($this->_query=$this->_pdo->prepare($sql)){
+                $x=1;
+                if(count($params)){
+                    foreach($params as $param){
+                        $this->_query->bindValue($x, $param);
+                        $x++;
+                    }
+                    //echo var_dump( $this->_query->bindValue($x, $param));
+                }
+
+                if($this->_query->execute()){
+                    $this->_result=$this->_query->fetchAll(PDO::FETCH_OBJ);
+                    $this->_count=$this->_query->rowCount();
+                }else if(!$this->_query->execute()){
+                    $this->_error=true;
+                    echo '<br>DB.php line 43, erreur query not executing<br>';
                 }
             }
-            if($this->_query->execute()){
-                $this->_result=$this->_query->fetchAll(PDO::FETCH_OBJ);
-                $this->_count=$this->_query->rowCount();
-
-            }else{$this->_error=true;}
-        }return $this;}
+            return $this;
+        
     }
     public function action($action,$table,$where=array()){
         //making it sure that the array is passed with three elements only!
@@ -49,7 +55,7 @@ class DB{
             $value=$where[2];
 
             if(in_array($operator, $operators)){
-                $sql="{$action} from {$table} where {$field} {$operator} ?";
+                $sql="{$action} FROM `{$table}` WHERE `{$field}` {$operator} ?";
                 if(!$this->query($sql, array($value))->error()){
                     return $this;
                 }
@@ -58,10 +64,10 @@ class DB{
         return false;
     }
     public function get($table, $where){
-        return $this->action('Select *', $table, $where);
+        return $this->action('SELECT *', $table, $where);
     }
     public function delete($table, $where){
-        return $this->action('delete', $table, $where);
+        return $this->action('DELETE', $table, $where);
     }
     public function insert($table, $fields=array()){
         if(count($fields)){
@@ -69,21 +75,24 @@ class DB{
             $values="";
             $x=1;
             foreach($fields as $field){
-                $values.='?';
-                if($x<count($fields)){
-                    $values .=', ';
+                $values.= '?';
+                //$values.="'".$field."'";
+                if($x < count($fields)){
+                    $values .= ',';
                 }
                 $x++;
             }
-        $sql="Insert into {$table} ('".implode("','",$keys)."') values ({$values})";
-            if($this->query($sql, $fields)->error()){
+            $sql="INSERT INTO `{$table}` (`" . implode("`,`", $keys) . "`) VALUES ({$values})";
+            //echo $sql;
+            if(!$this->query($sql, $fields)->error()){
+                echo 'no errors';
                 return true;
             }
         }
         return false;
     }
     public function update($table,$id, $fields){
-        $set="";
+        $set='';
         $x=1;
         foreach($fields as $name=>$value){
             $set.="{$name}=?";
@@ -93,13 +102,17 @@ class DB{
             $x++;
         }
         die($set);
-        $sql="update {$table} set {$set} where id={$id}";
+        $sql="UPDATE `{$table}` SET `{$set}` WHERE ID={$id}";
+        if(!$this->query($sql, $fields)->error()){
+            return true;
+        }
+        return false;
     }
     public function result(){
-        return $this->_results;
-    }
+        return $this->_result;
+    } 
     public function first(){
-        return $this->result[0];
+        return $this->result()[0];
     }
     public function error(){
         return $this->_error;

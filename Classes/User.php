@@ -6,7 +6,7 @@
                 $_isLoggedIn, 
                 $_cookieName;
 
-        public function _construct($user = null){
+        public function __construct($user = null){
             $this->_db=DB::getInstance();
             $this->_sessionName=Config::get('session/session_name');
             $this->_cookieName=Config::get('remember/cookie_name');
@@ -16,7 +16,7 @@
                     if ($this->find($user)) {
                         $this->_isLoggedIn=true;
                     } else {
-                        # code.....
+                        //logout
                     }
         
                 }
@@ -25,8 +25,8 @@
             }
         }
         public function create($fields=array()){
-            if($this->_db->insert('tblusers', $fields)){
-                throw new Exception("There was a problem creating account!", 1);
+            if(!$this->_db->insert('tblusers', $fields)){
+                throw new Exception("There was a problem creating account!");
             }
         }
 
@@ -34,7 +34,7 @@
             $data = null;
             if($user){
                 $field=(is_numeric($user)) ? 'ID': 'UserName';
-                $data = $this->_db->get('tbluser', array($field, '=', $user));
+                $data = $this->_db->get('tblusers', array($field, '=', $user));
 
                 if($data->count()){
                     $this->_data=$data->first();
@@ -89,7 +89,7 @@
             return (!empty($this->_data))?true:false;
         }
         public function logout(){
-            $this->_db->delete('users_session', array('user_id', '=', $this->data()->id));
+            $this->_db->delete('tblsession', array('UserID', '=', $this->data()->id));
             Session::delete($this->_sessionName);
             Cookie::delete($this->_cookieName);
         }
@@ -103,9 +103,8 @@
             if(!$id && $this->isLoggedIn()){
                 $id=$this->data()->id;
             }
-            if(!$this->_db->update('tbluser', $id, $fields)){
+            if(!$this->_db->update('tblusers', $id, $fields)){
                 throw new Exception("There was a problem updating");
-                
             }
         }
     }

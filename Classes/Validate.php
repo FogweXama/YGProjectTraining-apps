@@ -1,19 +1,20 @@
 <?php
+require_once './Core/init.php';
         class Validate{
             private $_passed=false,
                     $_errors=array(),
                     $_db=null;
 
-            public function _construct()
-            {
-                $this->_db=DB::getInstance();
+            public function __construct(){
+                 $this->_db=DB::getInstance();
             }
             //$source is where our data comes from...
             public function check($source, $items=array()){
+                
                 foreach($items as $item=>$rules){
                     foreach($rules as $rule=>$rule_value){
                         $value=trim($source[$item]);
-                        $item=escape($item);
+                        //$item=escape($item);
                         if($rule==='required'&& empty($value)){
                             //$item will carry field name
                             $this->addError("{$item} is required");
@@ -36,7 +37,14 @@
                                 }
                                 break;
                                 case 'unique':
-                                    $check =$this->_db->get($rule_value, array($item, '=', $value));
+                                    //here is my watchtower and works perfectly well
+                                    // echo $rule_value. '<br>';
+                                    // echo $value. '<br>';
+                                    // echo $item. '<br>';
+                                    $vals="UserName";
+                                    $check =$this->_db->get($rule_value, array($vals, '=', $value));
+                                    
+                                    //var_dump($check);
                                     if($check->count()){
                                         $this->addError("{$item} already exists.");
                                     }
